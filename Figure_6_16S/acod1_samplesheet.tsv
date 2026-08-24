@@ -1,0 +1,13 @@
+sample-id	absolute-filepath
+F10B	az://nextflow/HiFi-16S-workflow/input_files/F10B_hifi_reads.fastq.gz
+F14B	az://nextflow/HiFi-16S-workflow/input_files/F14B_hifi_reads.fastq.gz
+F1A	az://nextflow/HiFi-16S-workflow/input_files/F1A_hifi_reads.fastq.gz
+F3A	az://nextflow/HiFi-16S-workflow/input_files/F3A_hifi_reads.fastq.gz
+F3B	az://nextflow/HiFi-16S-workflow/input_files/F3B_hifi_reads.fastq.gz
+F4A	az://nextflow/HiFi-16S-workflow/input_files/F4A_hifi_reads.fastq.gz
+M10B	az://nextflow/HiFi-16S-workflow/input_files/M10B_hifi_reads.fastq.gz
+M11A	az://nextflow/HiFi-16S-workflow/input_files/M11A_hifi_reads.fastq.gz
+M11B	az://nextflow/HiFi-16S-workflow/input_files/M11B_hifi_reads.fastq.gz
+M1A	az://nextflow/HiFi-16S-workflow/input_files/M1A_hifi_reads.fastq.gz
+M1B	az://nextflow/HiFi-16S-workflow/input_files/M1B_hifi_reads.fastq.gz
+M3A	az://nextflow/HiFi-16S-workflow/input_files/M3A_hifi_reads.fastq.gz
