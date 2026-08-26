@@ -13,7 +13,8 @@ The study identifies an inflammation-associated monocyte-derived cell population
 | `Figure_2_and_S2_revised.R` | Mouse colon scRNA-seq preprocessing and analyses for Fig. 2A-F and Fig. S2C/D/F/H/I |
 | `Figure_4_and_S4_revised.R` | Combined mouse blood/colon scRNA-seq preprocessing, signature scoring and trajectory analyses for Fig. 4A/B/D-F and Fig. S4B/E/F |
 | `Figure_5_human_revised.R` | Human scRNA-seq Reactome GSEA, transcription-factor activity and PROGENy analyses for the human components of Fig. 5A/C/D |
-| `S2_python_mouse.ipynb` | Scanpy reanalysis used for Fig. S2E, if included in the repository |
+| `S2_python_mouse.ipynb` | Scanpy reanalysis used for Fig. S2E |
+| `Figure_6D_16S/` | PacBio HiFi full-length 16S workflow documentation, sample metadata and downstream phyloseq analysis for Fig. 6D |
 
 The existing human scRNA-seq scripts for Fig. 1A/B/D/E, Fig. 3D/E and related supplementary panels are maintained separately and are not duplicated in these files.
 
@@ -21,15 +22,16 @@ Flow-cytometry panels were analysed in FlowJo and/or GraphPad Prism and are not 
 
 ## Data availability
 
-The human scRNA-seq dataset is available from Zenodo:
+| Dataset | Repository and accession | Status at 26 August 2026 |
+| --- | --- | --- |
+| Human intestinal scRNA-seq | [Zenodo DOI 10.5281/zenodo.8301000](https://doi.org/10.5281/zenodo.8301000) | Available |
+| Mouse blood and colon scRNA-seq | [NCBI GEO: GSE345123](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE345123) | Accession assigned; record currently private |
+| Mouse colonic monocyte NanoString profiling | [NCBI GEO: GSE345013](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE345013) | Private until 27 August 2027 |
+| Mouse faecal microbiota full-length 16S rRNA sequencing | [NCBI BioProject: PRJNA1518240](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1518240) | Private until 1 September 2027; 12 BioSamples and 12 SRA records |
 
-- [Human intestinal scRNA-seq data - Zenodo DOI 10.5281/zenodo.8301000](https://doi.org/10.5281/zenodo.8301000)
+Accessions under embargo may not display a public record until their scheduled release. NCBI release dates can be brought forward when the article is published.
 
-The mouse scRNA-seq data will be available through the NCBI Gene Expression Omnibus. Add the final GEO accession here when it has been released:
-
-- **Mouse scRNA-seq GEO accession:** `GSEXXXXXX`
-
-The large raw and processed expression matrices are not stored directly in this GitHub repository. After downloading the data, arrange it as described below.
+Large raw sequencing files and processed expression matrices are not stored directly in this GitHub repository. After downloading the data, arrange the scRNA-seq files as described below. The Figure 6D subfolder contains its own processing notes and metadata, but not the deposited FASTQ files.
 
 ## Expected local data structure
 
@@ -42,6 +44,16 @@ Jones-et-al.-Science-Immunology/
 ├── Figure_4_and_S4_revised.R
 ├── Figure_5_human_revised.R
 ├── S2_python_mouse.ipynb
+├── Figure_6D_16S/
+│   ├── README.md
+│   ├── phyloseq_analysis_acod1.R
+│   ├── azurebatch_hifi.config
+│   ├── input_files/
+│   │   ├── acod1_samplesheet.tsv
+│   │   └── acod1_metadata.tsv
+│   └── acod1_output/
+│       └── results/
+│           └── best_tax_merged_freq_tax.tsv
 ├── data/
 │   ├── mouse_scRNAseq/
 │   │   ├── G1/
@@ -65,6 +77,8 @@ Jones-et-al.-Science-Immunology/
 │       └── c2.cp.reactome.v2023.2.Hs.symbols.gmt
 └── output/
 ```
+
+The downstream Figure 6D script additionally expects the HiFi-16S workflow output `Figure_6D_16S/acod1_output/results/best_tax_merged_freq_tax.tsv`. This derived abundance/taxonomy table should be generated from the deposited 16S reads using the workflow described in `Figure_6D_16S/README.md`. Set `project_dir` near the top of `phyloseq_analysis_acod1.R` to the local `Figure_6D_16S` directory before running it. Before committing `azurebatch_hifi.config`, remove all cloud account names, keys, SAS tokens, passwords and other credentials.
 
 Dataset labels used by the mouse scripts are:
 
@@ -98,7 +112,9 @@ The scripts were prepared for R 4.x and use Seurat v5-style objects. Required pa
 - `dplyr`, `tidyr`, `tibble`, `readr`, `stringr`, `purrr`
 - `ggplot2`, `ggrepel`, `scales`, `pheatmap`
 
-The manuscript specifies Seurat v5.0, Monocle3 v1.3.7 and PROGENy v1.17.3 for the corresponding analyses. Each script writes `sessionInfo.txt` to its output directory so that the executed package versions can be recorded.
+The Figure 6D analysis additionally uses `phyloseq`, `microbiome`, `vegan`, `pairwiseAdonis`, `ggExtra`, `cowplot` and `rlang`. Reprocessing the raw 16S reads requires the [PacBio HiFi-16S workflow v0.9](https://github.com/PacificBiosciences/HiFi-16S-workflow), Nextflow v25.04.6 and a compatible Singularity environment; see the subfolder README for the exact command and configuration.
+
+The manuscript specifies Seurat v5.0, Monocle3 v1.3.7 and PROGENy v1.17.3 for the corresponding analyses. Each of the three scRNA-seq R scripts writes `sessionInfo.txt` to its output directory so that the executed package versions can be recorded.
 
 ## Running the analyses
 
@@ -108,6 +124,7 @@ After installing the required packages and downloading the input data, run:
 Rscript Figure_2_and_S2_revised.R
 Rscript Figure_4_and_S4_revised.R
 Rscript Figure_5_human_revised.R
+Rscript Figure_6D_16S/phyloseq_analysis_acod1.R
 ```
 
 Outputs are written to:
@@ -116,9 +133,10 @@ Outputs are written to:
 output/Figure_2_S2/
 output/Figure_4_S4/
 output/Figure_5_human/
+Figure_6D_16S/figures/
 ```
 
-The scripts export panel-level plots, intermediate result tables, processed Seurat/Monocle objects where relevant, and session information. Input checks stop execution with an informative message when a required file, column, cluster or gene is missing.
+The scRNA-seq scripts export panel-level plots, intermediate result tables, processed Seurat/Monocle objects where relevant, and session information. Input checks stop execution with an informative message when a required file, column, cluster or gene is missing. The 16S script exports alpha-diversity results and the Figure 6D beta-diversity plot.
 
 ## Panel provenance
 
@@ -142,6 +160,12 @@ The scripts export panel-level plots, intermediate result tables, processed Seur
 
 - Human components of Fig. 5A/C/D: generated by `Figure_5_human_revised.R`.
 - Mouse and experimental components of Fig. 5 are outside the scope of this script.
+
+### Figure 6D full-length 16S rRNA analysis
+
+- Raw PacBio HiFi reads were processed with the PacBio HiFi-16S Nextflow workflow.
+- Fig. 6D beta-diversity ordination and PERMANOVA are generated by `Figure_6D_16S/phyloseq_analysis_acod1.R` from the merged ASV abundance/taxonomy table and sample metadata.
+- The same script also exports alpha-diversity results as a CSV file.
 
 ## Reproducibility notes
 
