@@ -1,0 +1,5 @@
+trajectory,root_cell
+naive_blood_colon,REPLACE_WITH_ORIGINAL_ROOT_BARCODE
+dss_blood_colon,REPLACE_WITH_ORIGINAL_ROOT_BARCODE
+naive_colon_only,REPLACE_WITH_ORIGINAL_ROOT_BARCODE
+dss_colon_only,REPLACE_WITH_ORIGINAL_ROOT_BARCODE
